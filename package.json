@@ -1,0 +1,21 @@
+{
+  "name": "servidor-chat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "http": "^0.0.1-security",
+    "mongodb": "^6.6.1",
+    "mongoose": "^8.3.4",
+    "node-fetch": "^3.3.2",
+    "os": "^0.1.2"
+  }
+}
