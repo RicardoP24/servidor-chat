@@ -8,7 +8,7 @@ const chatMessages = document.getElementById('chat-messages');
 const auth = document.getElementById('auth');
 const chatContainer = document.getElementById('chat-container');
 sender = ''
-ip_main= '192.168.0.136'
+ip_main= 'localhost'
  
 async function getBestServerIp() {
   
