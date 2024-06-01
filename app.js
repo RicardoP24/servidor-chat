@@ -8,13 +8,13 @@ const chatMessages = document.getElementById('chat-messages');
 const auth = document.getElementById('auth');
 const chatContainer = document.getElementById('chat-container');
 sender = ''
-ip_main= 'localhost'
+zookeeper_IP= 'localhost'
  
 async function getBestServerIp() {
   
   //Alterar endereço de IP no dia do teste
 
-  const response = await fetch(`http://${ip_main}:8085/api/best-server`);
+  const response = await fetch(`http://${zookeeper_IP}:8085/api/best-server`);
   if (!response.ok) {
     throw new Error('Failed to fetch messages');
   }

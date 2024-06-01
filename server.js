@@ -10,6 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 // Connect to MongoDB
 main_IP='localhost';
+zookeeper_IP='localhost';
 
 mongoose.connect(`mongodb+srv://ricardopilartes03:mongo123fdfd@cluster0.eb86kzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`);
 const db = mongoose.connection;
@@ -158,7 +159,7 @@ function sendSystemInfo() {
         const postData = JSON.stringify(systemInfo);
 
         const options = {
-            hostname: main_IP,
+            hostname: zookeeper_IP,
             port: 8085,
             path: '/api/system-info',
             method: 'POST',
