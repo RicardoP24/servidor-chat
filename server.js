@@ -9,9 +9,9 @@ const os = require('os');
 const app = express();
 const PORT = process.env.PORT || 3000;
 // Connect to MongoDB
-main_IP='172.16.0.146';
+main_IP='localhost';
 
-mongoose.connect(`mongodb://${main_IP}:27017`);
+mongoose.connect(`mongodb+srv://ricardopilartes03:mongo123fdfd@cluster0.eb86kzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`);
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => console.log('Connected to MongoDB'));
