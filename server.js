@@ -4,14 +4,13 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const http = require('http');
 const os = require('os');
-
+const { exec } = require('child_process');
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3000;
 // Connect to MongoDB
-main_IP='localhost';
-zookeeper_IP='localhost';
-
+main_IP = 'localhost';
+zookeeper_IP = '192.168.0.135';
 mongoose.connect(`mongodb+srv://ricardopilartes03:mongo123fdfd@cluster0.eb86kzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`);
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -131,24 +130,75 @@ function getCpuUsage() {
     };
 }
 
-// Function to get the IP address
-function getIpAddress() {
-    const interfaces = os.networkInterfaces();
-    for (let name of Object.keys(interfaces)) {
-        for (let iface of interfaces[name]) {
-            if (iface.family === 'IPv4' && !iface.internal) {
-                return iface.address;
-            }
+
+ 
+function getIPv4Address(interfaceName) {
+    const networkInterfaces = os.networkInterfaces();
+    const interfaceInfo = networkInterfaces[interfaceName];
+    
+    if (interfaceInfo) {
+      for (let info of interfaceInfo) {
+        if (info.family === 'IPv4' && !info.internal) {
+          return info.address;
         }
+      }
     }
-    return '127.0.0.1';
+    return null;
+  }
+
+function getWiFiInterfaceName() {
+  return new Promise((resolve, reject) => {
+    exec('netsh interface show interface', (error, stdout, stderr) => {
+      if (error) {
+        return reject(`exec error: ${error}`);
+      }
+  
+      const lines = stdout.split('\n');
+      let wifiInterfaceName = null;
+  
+      for (let line of lines) {
+        if (line.includes('Wi-Fi')) {
+          const columns = line.trim().split(/\s+/);
+          wifiInterfaceName = columns[columns.length - 1];
+          break;
+        }
+      }
+  
+      if (wifiInterfaceName) {
+        resolve(wifiInterfaceName);
+      } else {
+        reject(new Error('Wi-Fi interface not found'));
+      }
+    });
+  });
 }
 
+async function getWiFiIPv4Address() {
+  try {
+    const wifiInterfaceName = await getWiFiInterfaceName();
+    const ipv4Address = getIPv4Address(wifiInterfaceName);
+
+    if (ipv4Address) {
+      console.log('IPv4 Address:', ipv4Address);
+      return ipv4Address;
+    } else {
+      console.error('IPv4 address not found for the Wi-Fi interface');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+
+
 // Function to send CPU usage and IP address every 10 seconds
-function sendSystemInfo() {
-    setInterval(() => {
+ function sendSystemInfo() {
+    setInterval(async () => {
+        let ipAddress='';
+
+        ipAddress=await getWiFiIPv4Address();
         const cpuUsage = getCpuUsage();
-        const ipAddress = getIpAddress();
         const systemInfo = {
             cpuUsage: cpuUsage.usage.toPrecision(5),
             ipAddress: ipAddress
@@ -186,10 +236,10 @@ function sendSystemInfo() {
 
         req.end(postData);
 
-    }, 10000);
+    }, 1000);
 }
 
- 
+
 
 // Start the server and execute the function to send system info
 
