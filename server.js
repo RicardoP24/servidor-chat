@@ -236,7 +236,7 @@ async function getWiFiIPv4Address() {
 
         req.end(postData);
 
-    }, 1000);
+    }, 10000);
 }
 
 

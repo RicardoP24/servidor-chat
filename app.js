@@ -8,7 +8,7 @@ const chatMessages = document.getElementById('chat-messages');
 const auth = document.getElementById('auth');
 const chatContainer = document.getElementById('chat-container');
 sender = ''
-zookeeper_IP= '172.23.32.1'
+zookeeper_IP= '192.168.0.135'
  
 async function getBestServerIp() {
   
